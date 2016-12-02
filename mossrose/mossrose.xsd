@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="https://jiuxiantuan.github.io/mossrose" targetNamespace="https://jiuxiantuan.github.io/mossrose">
-	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
 	<xsd:import namespace="http://www.springframework.org/schema/beans" />
 	<xsd:import namespace="http://www.springframework.org/schema/tool" />
 
@@ -24,15 +23,18 @@
 
 	<complexType name="jobs"></complexType>
 
-    <element name="job" type="tns:job"></element>
-
-    <element name="cluster" type="tns:cluster"></element>
-
-    <element name="jobs">
-    	<complexType>
-    		<sequence>
-    			<element ref="job" minOccurs="1"></element>
-    		</sequence>
-    	</complexType>
-    </element>
+	<element name="mossrose">
+		<complexType>
+			<sequence>
+				<element name="cluster" type="tns:cluster" />
+				<element name="jobs">
+					<complexType>
+						<sequence>
+							<element name="job" type="tns:job"></element>
+						</sequence>
+					</complexType>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
 </schema>
