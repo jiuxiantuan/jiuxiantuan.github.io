@@ -1,54 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="https://jiuxiantuan.github.io/mossrose" targetNamespace="https://jiuxiantuan.github.io/mossrose">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:beans="http://www.springframework.org/schema/beans" xmlns:tool="http://www.springframework.org/schema/tool"
+	xmlns:tns="https://jiuxiantuan.github.io/mossrose" targetNamespace="https://jiuxiantuan.github.io/mossrose" elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
 
-	<xsd:import namespace="http://www.springframework.org/schema/beans" />
+	<import namespace="http://www.springframework.org/schema/beans" />
+	<import namespace="http://www.springframework.org/schema/tool" />
 
-	<element name="config" type="tns:config" />
+	<element id="config" name="config" type="tns:config" />
+	<element id="process" name="process" type="tns:process" />
+	<element id="ui" name="ui" type="tns:ui" />
 
 	<complexType name="config">
 		<sequence>
 			<element name="cluster" maxOccurs="1" minOccurs="1">
 				<complexType>
-					<complexContent>
-						<extension base="beans:identifiedType">
-							<attribute name="name" type="string" use="required"></attribute>
-							<attribute name="loadBalancingMode" use="required">
-								<annotation>
-									<documentation>
+					<attribute name="name" type="string" use="required"></attribute>
+					<attribute name="loadBalancingMode" use="optional" default="ROUND_ROBIN">
+						<annotation>
+							<documentation>
 										<![CDATA[ Cluster load balancing mode. ]]>
-									</documentation>
-								</annotation>
-								<simpleType>
-									<restriction base="string">
-										<enumeration value="ROUND_ROBIN"></enumeration>
-										<enumeration value="RANDOM"></enumeration>
-									</restriction>
-								</simpleType>
-							</attribute>
-							<attribute name="port" type="int" use="optional" default="18888"></attribute>
-						</extension>
-					</complexContent>
+							</documentation>
+						</annotation>
+						<simpleType>
+							<restriction base="string">
+								<enumeration value="ROUND_ROBIN"></enumeration>
+								<enumeration value="RANDOM"></enumeration>
+							</restriction>
+						</simpleType>
+					</attribute>
+					<attribute name="port" type="int" use="optional" default="18888"></attribute>
 				</complexType>
 			</element>
 			<element name="jobs" maxOccurs="1" minOccurs="1">
 				<complexType>
 					<sequence>
-						<element name="job" minOccurs="1">
+						<element name="job" minOccurs="1" maxOccurs="unbounded">
 							<complexType>
-								<complexContent>
-									<extension base="beans:identifiedType">
-										<attribute name="id" type="string" use="optional" />
-										<attribute name="cron" type="string" use="required" />
-										<attribute name="main" type="string" use="required" />
-										<attribute name="group" type="string" use="optional" />
-										<attribute name="description" type="string" use="optional" />
-									</extension>
-								</complexContent>
+								<attribute name="id" type="string" use="optional" />
+								<attribute name="cron" type="string" use="required" />
+								<attribute name="main" type="string" use="required" />
+								<attribute name="group" type="string" use="optional" />
+								<attribute name="description" type="string" use="optional" />
 							</complexType>
 						</element>
 					</sequence>
 				</complexType>
 			</element>
 		</sequence>
+		<attribute name="id" type="string" use="optional" default="mossroseConfig" />
 	</complexType>
+
+	<simpleType name="mossroseConfigRef">
+		<annotation>
+			<appinfo>
+				<tool:annotation kind="ref">
+					<tool:assignable-to type="com.jiuxian.mossrose.config.MossroseConfig" />
+				</tool:annotation>
+			</appinfo>
+		</annotation>
+		<union memberTypes="string" />
+	</simpleType>
+
+	<simpleType name="mossroseProcessRef">
+		<annotation>
+			<appinfo>
+				<tool:annotation kind="ref">
+					<tool:assignable-to type="com.jiuxian.mossrose.MossroseProcess" />
+				</tool:annotation>
+			</appinfo>
+		</annotation>
+		<union memberTypes="string" />
+	</simpleType>
+
+	<complexType name="process">
+		<attribute name="id" type="string" use="optional" default="mossroseProcess" />
+		<attribute name="mossrose-config-ref" type="tns:mossroseConfigRef" use="optional" default="mossroseConfig" />
+		<attribute name="zks" type="string" use="required" />
+	</complexType>
+
+    <complexType name="ui">
+		<attribute name="id" type="string" use="optional" default="restMossroseUI" />
+		<attribute name="mossrose-process-ref" type="tns:mossroseProcessRef" use="optional" default="mossroseProcess" />
+    	<attribute name="port" type="string" use="optional" default="7758" />
+    </complexType>
 </schema>
