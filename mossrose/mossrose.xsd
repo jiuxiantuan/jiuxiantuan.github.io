@@ -1,40 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="https://jiuxiantuan.github.io/mossrose" targetNamespace="https://jiuxiantuan.github.io/mossrose">
+
 	<xsd:import namespace="http://www.springframework.org/schema/beans" />
-	<xsd:import namespace="http://www.springframework.org/schema/tool" />
 
-	<complexType name="cluster">
+	<element name="config" type="tns:config" />
+
+	<complexType name="config">
 		<sequence>
-			<element name="name" type="string"></element>
-			<element name="loadBalancingMode" type="string"></element>
-			<element name="port" type="int"></element>
+			<element name="cluster" maxOccurs="1" minOccurs="1">
+				<complexType>
+					<complexContent>
+						<extension base="beans:identifiedType">
+							<attribute name="name" type="string" use="required"></attribute>
+							<attribute name="loadBalancingMode" use="required">
+								<annotation>
+									<documentation>
+										<![CDATA[ Cluster load balancing mode. ]]>
+									</documentation>
+								</annotation>
+								<simpleType>
+									<restriction base="string">
+										<enumeration value="ROUND_ROBIN"></enumeration>
+										<enumeration value="RANDOM"></enumeration>
+									</restriction>
+								</simpleType>
+							</attribute>
+							<attribute name="port" type="int" use="optional" default="18888"></attribute>
+						</extension>
+					</complexContent>
+				</complexType>
+			</element>
+			<element name="jobs" maxOccurs="1" minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="job" minOccurs="1">
+							<complexType>
+								<complexContent>
+									<extension base="beans:identifiedType">
+										<attribute name="id" type="string" use="optional" />
+										<attribute name="cron" type="string" use="required" />
+										<attribute name="main" type="string" use="required" />
+										<attribute name="group" type="string" use="optional" />
+										<attribute name="description" type="string" use="optional" />
+									</extension>
+								</complexContent>
+							</complexType>
+						</element>
+					</sequence>
+				</complexType>
+			</element>
 		</sequence>
 	</complexType>
-
-	<complexType name="job">
-		<sequence>
-			<element name="id" type="string"></element>
-			<element name="group" type="string"></element>
-			<element name="cron" type="string"></element>
-			<element name="main" type="string"></element>
-			<element name="description" type="string"></element>
-		</sequence>
-	</complexType>
-
-	<complexType name="jobs"></complexType>
-
-	<element name="mossrose">
-		<complexType>
-			<sequence>
-				<element name="cluster" type="tns:cluster" />
-				<element name="jobs">
-					<complexType>
-						<sequence>
-							<element name="job" type="tns:job"></element>
-						</sequence>
-					</complexType>
-				</element>
-			</sequence>
-		</complexType>
-	</element>
 </schema>
