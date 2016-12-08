@@ -49,7 +49,7 @@
 							</documentation>
 						</annotation>
 					</attribute>
-					<attribute name="loadBalancingMode" use="optional" default="ROUND_ROBIN">
+					<attribute name="load-balancing-mode" use="optional" default="ROUND_ROBIN">
 						<annotation>
 							<documentation>
 										<![CDATA[ Cluster load balancing mode. ]]>
